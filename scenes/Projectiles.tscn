@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3 uid="uid://dpsihrdv34wac"]
+
+[ext_resource type="Texture2D" uid="uid://ddtg8a4vcll20" path="res://assets/blue bullet.png" id="1_36iw6"]
+[ext_resource type="Script" uid="uid://q3dvndyu8jby" path="res://scripts/blue_bullet.gd" id="2_7jn7p"]
+
+[sub_resource type="Gradient" id="Gradient_36iw6"]
+offsets = PackedFloat32Array(0, 0.813333, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_7jn7p"]
+offsets = PackedFloat32Array(0, 0.166667, 0.48, 0.74, 0.936667)
+colors = PackedColorArray(0, 0, 0, 1, 0.0182636, 0.0706724, 0.101244, 1, 0.136497, 0.528183, 0.756667, 1, 0.180392, 0.698039, 1, 1, 1, 1, 1, 1)
+
+[node name="Projectiles" type="Node2D"]
+
+[node name="BulletDestroyedAnimation" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 20
+one_shot = true
+explosiveness = 1.0
+lifetime_randomness = 0.3
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 15.0
+initial_velocity_max = 20.0
+color_ramp = SubResource("Gradient_36iw6")
+color_initial_ramp = SubResource("Gradient_7jn7p")
+
+[node name="BlueBullet" type="Node2D" parent="."]
+script = ExtResource("2_7jn7p")
+
+[node name="BlueBulletSprite" type="Sprite2D" parent="BlueBullet"]
+texture = ExtResource("1_36iw6")
+
+[node name="RayCheck" type="RayCast2D" parent="BlueBullet"]
+position = Vector2(-3, 0)
+exclude_parent = false
+target_position = Vector2(6, 0)
+hit_from_inside = true
+
+[node name="DistanceBasedDispawning" type="VisibleOnScreenNotifier2D" parent="BlueBullet"]
+visible = false
+position = Vector2(-1.90735e-06, 0)
+scale = Vector2(2.4, 2.4)
+
+[connection signal="screen_exited" from="BlueBullet/DistanceBasedDispawning" to="BlueBullet/BlueBulletSprite" method="_on_distance_based_dispawning_screen_exited"]

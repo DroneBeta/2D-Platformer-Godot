@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://bbsusv2xsqnwo"]
+
+[ext_resource type="Script" uid="uid://bl5jcv8difsmo" path="res://scripts/weapons.gd" id="1_h1vhg"]
+[ext_resource type="Texture2D" uid="uid://csdh8xfnignk0" path="res://assets/Free-Guns-Icon-32x32-Pixel-Pack/1 Icons/Icon29_16.png" id="1_k3dre"]
+[ext_resource type="Script" uid="uid://baj1oe8bl40er" path="res://scripts/blue_gun.gd" id="2_h1vhg"]
+[ext_resource type="PackedScene" uid="uid://dpsihrdv34wac" path="res://scenes/Projectiles.tscn" id="4_rit2c"]
+
+[node name="Weapons" type="Node2D"]
+script = ExtResource("1_h1vhg")
+
+[node name="BlueGun" type="Sprite2D" parent="."]
+position = Vector2(8, 4)
+rotation = 0.785398
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("1_k3dre")
+script = ExtResource("2_h1vhg")
+
+[node name="ShotPos" type="Marker2D" parent="BlueGun"]
+position = Vector2(13, -13)
+
+[node name="Projectiles" parent="." instance=ExtResource("4_rit2c")]
+position = Vector2(32, 8)

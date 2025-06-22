@@ -1,0 +1,53 @@
+[gd_scene load_steps=6 format=3 uid="uid://xxrmfasop3iy"]
+
+[ext_resource type="Script" uid="uid://cia3lt8dx6xej" path="res://scripts/player_movement.gd" id="1_q7b6q"]
+[ext_resource type="Texture2D" uid="uid://wqxymdeegq7k" path="res://icon.svg" id="2_dn4c7"]
+[ext_resource type="PackedScene" uid="uid://bbsusv2xsqnwo" path="res://scenes/Weapons.tscn" id="3_6ienr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q7b6q"]
+size = Vector2(29, 29)
+
+[sub_resource type="Gradient" id="Gradient_6ienr"]
+offsets = PackedFloat32Array(0.17, 0.67, 0.866667)
+colors = PackedColorArray(0.827451, 0.74902, 0.109804, 1, 0.756272, 0.425323, 0.130094, 1, 0.662746, 0, 0.156753, 1)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_q7b6q")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+offset = Vector2(0, -20)
+zoom = Vector2(0.7, 0.7)
+position_smoothing_enabled = true
+position_smoothing_speed = 10.0
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.15
+drag_top_margin = 0.3
+drag_right_margin = 0.15
+drag_bottom_margin = 0.1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.175, 0.175)
+texture = ExtResource("2_dn4c7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.8, 0.8)
+shape = SubResource("RectangleShape2D_q7b6q")
+
+[node name="Weapons" parent="." instance=ExtResource("3_6ienr")]
+
+[node name="JetPackFire" type="CPUParticles2D" parent="."]
+position = Vector2(0, 12)
+emitting = false
+amount = 200
+lifetime = 0.15
+explosiveness = 0.7
+emission_shape = 1
+emission_sphere_radius = 5.0
+direction = Vector2(0, 1)
+spread = 60.0
+gravity = Vector2(0, 500)
+initial_velocity_min = 20.0
+initial_velocity_max = 80.0
+angular_velocity_min = -5.0
+color_ramp = SubResource("Gradient_6ienr")
