@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@onready var jet_pack_fire: CPUParticles2D = $JetPackFire
+@onready var jet_pack_fire: GPUParticles2D = $JetPackFire2
 
 
 # Player's WASD
@@ -13,10 +13,10 @@ var WALL_GLIDE := 1.0
 
 # Gravity
 const GRAVITY := 1800.0
-const FAST_GRAVITY := 2300.0
+const AIR_TIME_GRAVITY := 70.0
+const FAST_GRAVITY := 2100.0
 const FAST_FALLING := 4000.0
 const WALL_GRAVITY := 22.0
-const JET_PACK_ACCELERATION := 500
 
 # Properties of movement
 const JUMP_VELOCITY := -600
@@ -24,13 +24,15 @@ const WALL_JUMP_VELOCITY := -400
 const WALL_JUMP_PUSHBACK := 400
 const DASH_VELOCITY := 800
 const DASH_PUSH_DOWN := 200
+const JET_PACK_ACCELERATION := 40
+
 
 # Time value
 const INPUT_BUFFER_WAIT := 0.1
 const COYOTE_JUMP_TIMER_WAIT := 0.1
 const DASH_COOLDOWN_WAIT := 0.5
-const JET_PACK_TIME := 0.3
-var JET_PACK_FUEL := 20
+const JET_PACK_TIME := 0.4
+var JET_PACK_FUEL := 50
 
 # Timers
 var input_buffer : Timer
@@ -60,6 +62,11 @@ func _ready():
 	add_child(dash_cooldown)
 	dash_cooldown.timeout.connect(dash_timeout)
 	
+	jet_pack_timer = Timer.new()
+	jet_pack_timer.wait_time = JET_PACK_TIME
+	jet_pack_timer.one_shot = true
+	add_child(jet_pack_timer)
+	jet_pack_timer.timeout.connect(jet_pack_timeout)
 
 func _physics_process(delta):
 	var horizontal_input = Input.get_axis("ui_left", "ui_right")
@@ -68,28 +75,33 @@ func _physics_process(delta):
 	var dash_attempted = Input.is_action_just_pressed("action_2")
 	
 	# Manages jump
+	if jet_pack_available and JET_PACK_FUEL > 0:
+		if jump_hold and velocity.y > 0:
+			velocity.y = -JET_PACK_ACCELERATION * 3
+			JET_PACK_FUEL -= 10
+			jet_pack_fire.emitting = true
+		elif jump_hold:
+			jet_pack_fire.emitting = true
+			velocity.y -= JET_PACK_ACCELERATION
+			JET_PACK_FUEL -= 1
+		else:
+			jet_pack_fire.emitting = false
 	if jump_attempted or input_buffer.time_left > 0:
 		if is_on_wall() and horizontal_input != 0:
 			velocity.y = WALL_JUMP_VELOCITY
 			velocity.x = WALL_JUMP_PUSHBACK * -sign(horizontal_input)
 			# Wall jumping reset abilities
 			dash_cooldown_available = true
-			JET_PACK_FUEL = 20
+			JET_PACK_FUEL = 40
+			jet_pack_available = false
+			jet_pack_timer.start()
 		elif coyote_jump_timer_available and velocity.y >= 0:
 			velocity.y = JUMP_VELOCITY
 			coyote_jump_timer_available = false
+			jet_pack_timer.start()
 		elif jump_attempted:
 			input_buffer.start()
-	elif jump_hold and JET_PACK_FUEL > 0:
-		jet_pack_fire.emitting = true
-		if velocity.y <= -100:
-			velocity.y -= JET_PACK_ACCELERATION * delta
-			JET_PACK_FUEL -= 1
-			print(JET_PACK_FUEL)
-		else:
-			velocity.y -= JET_PACK_ACCELERATION * delta
-			JET_PACK_FUEL -= 10
-			print(JET_PACK_FUEL)
+
 	
 	# Jump Height changing based on how long you press
 	if Input.is_action_just_released("action_1") and velocity.y < 0:
@@ -105,7 +117,9 @@ func _physics_process(delta):
 	# Manages y axis + reset jumping
 	if is_on_floor():
 		coyote_jump_timer_available = true
-		JET_PACK_FUEL = 20
+		JET_PACK_FUEL = 40
+		jet_pack_available = false
+		jet_pack_fire.emitting = false
 	else:
 		if coyote_jump_timer_available:
 			if coyote_jump_timer.is_stopped():
@@ -114,6 +128,8 @@ func _physics_process(delta):
 			velocity.y += FAST_FALLING * delta
 		elif is_on_wall_only() and velocity.y > 0 and horizontal_input != 0:
 			velocity.y = move_toward(velocity.y, WALL_GRAVITY, (WALL_FRICTION * delta) * WALL_GLIDE)
+		elif velocity.y > -3 and velocity.y < 3:
+			velocity.y += AIR_TIME_GRAVITY * delta
 		elif velocity.y < 0:
 			velocity.y += GRAVITY * delta
 		else:
@@ -137,3 +153,6 @@ func coyote_timeout():
 
 func dash_timeout():
 	dash_cooldown_available = true
+
+func jet_pack_timeout():
+	jet_pack_available = true

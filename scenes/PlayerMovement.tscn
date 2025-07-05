@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://xxrmfasop3iy"]
+[gd_scene load_steps=8 format=3 uid="uid://xxrmfasop3iy"]
 
 [ext_resource type="Script" uid="uid://cia3lt8dx6xej" path="res://scripts/player_movement.gd" id="1_q7b6q"]
 [ext_resource type="Texture2D" uid="uid://wqxymdeegq7k" path="res://icon.svg" id="2_dn4c7"]
@@ -7,9 +7,30 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q7b6q"]
 size = Vector2(29, 29)
 
-[sub_resource type="Gradient" id="Gradient_6ienr"]
-offsets = PackedFloat32Array(0.17, 0.67, 0.866667)
-colors = PackedColorArray(0.827451, 0.74902, 0.109804, 1, 0.756272, 0.425323, 0.130094, 1, 0.662746, 0, 0.156753, 1)
+[sub_resource type="Gradient" id="Gradient_cjdo3"]
+offsets = PackedFloat32Array(0, 0.318182, 0.863636, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.889714, 0.71402, 0.184182, 1, 0.627451, 0, 0.101961, 1, 0, 0, 0, 0.666667)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_4pw5u"]
+gradient = SubResource("Gradient_cjdo3")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7sudt"]
+lifetime_randomness = 0.2
+particle_flag_disable_z = true
+direction = Vector3(0, 10, 0)
+spread = 180.0
+initial_velocity_max = 10.0
+angular_velocity_min = -360.0
+angular_velocity_max = 360.0
+orbit_velocity_min = -0.4
+orbit_velocity_max = 0.4
+gravity = Vector3(0, 120, 0)
+attractor_interaction_enabled = false
+scale_min = 0.5
+scale_max = 4.0
+color_ramp = SubResource("GradientTexture1D_4pw5u")
+hue_variation_min = -0.1
+hue_variation_max = 0.1
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_q7b6q")
@@ -36,18 +57,12 @@ shape = SubResource("RectangleShape2D_q7b6q")
 
 [node name="Weapons" parent="." instance=ExtResource("3_6ienr")]
 
-[node name="JetPackFire" type="CPUParticles2D" parent="."]
-position = Vector2(0, 12)
+[node name="JetPackFire2" type="GPUParticles2D" parent="."]
+position = Vector2(0, 13)
 emitting = false
-amount = 200
-lifetime = 0.15
-explosiveness = 0.7
-emission_shape = 1
-emission_sphere_radius = 5.0
-direction = Vector2(0, 1)
-spread = 60.0
-gravity = Vector2(0, 500)
-initial_velocity_min = 20.0
-initial_velocity_max = 80.0
-angular_velocity_min = -5.0
-color_ramp = SubResource("Gradient_6ienr")
+amount = 500
+lifetime = 0.5
+randomness = 1.0
+visibility_rect = Rect2(-50, -50, 100, 100)
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_7sudt")
