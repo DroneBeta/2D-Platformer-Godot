@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://xxrmfasop3iy"]
+[gd_scene format=3 uid="uid://xxrmfasop3iy"]
 
 [ext_resource type="Script" uid="uid://cia3lt8dx6xej" path="res://scripts/player_movement.gd" id="1_q7b6q"]
 [ext_resource type="Texture2D" uid="uid://wqxymdeegq7k" path="res://icon.svg" id="2_dn4c7"]
@@ -32,10 +32,10 @@ color_ramp = SubResource("GradientTexture1D_4pw5u")
 hue_variation_min = -0.1
 hue_variation_max = 0.1
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" unique_id=1165011353]
 script = ExtResource("1_q7b6q")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=207632495]
 offset = Vector2(0, -20)
 zoom = Vector2(0.7, 0.7)
 position_smoothing_enabled = true
@@ -47,17 +47,17 @@ drag_top_margin = 0.3
 drag_right_margin = 0.15
 drag_bottom_margin = 0.1
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1240515002]
 scale = Vector2(0.175, 0.175)
 texture = ExtResource("2_dn4c7")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=126574220]
 scale = Vector2(0.8, 0.8)
 shape = SubResource("RectangleShape2D_q7b6q")
 
-[node name="Weapons" parent="." instance=ExtResource("3_6ienr")]
+[node name="Weapons" parent="." unique_id=1129294239 instance=ExtResource("3_6ienr")]
 
-[node name="JetPackFire2" type="GPUParticles2D" parent="."]
+[node name="JetPackFire2" type="GPUParticles2D" parent="." unique_id=387338939]
 position = Vector2(0, 13)
 emitting = false
 amount = 500

@@ -4,7 +4,7 @@ extends CharacterBody2D
 
 
 # Player's WASD
-const SPEED := 280.0
+@export var SPEED := 280.0
 const ACCELERATION := 1500.0
 const GROUND_FRICTION := 1500.0
 var GROUND_GLIDE := 1.0
@@ -75,17 +75,17 @@ func _physics_process(delta):
 	var dash_attempted = Input.is_action_just_pressed("action_2")
 	
 	# Manages jump
-	if jet_pack_available and JET_PACK_FUEL > 0:
-		if jump_hold and velocity.y > 0:
+	if jet_pack_available and JET_PACK_FUEL > 0 and jump_hold:
+		if velocity.y > 0:
 			velocity.y = -JET_PACK_ACCELERATION * 3
 			JET_PACK_FUEL -= 10
 			jet_pack_fire.emitting = true
-		elif jump_hold:
+		else:
 			jet_pack_fire.emitting = true
 			velocity.y -= JET_PACK_ACCELERATION
 			JET_PACK_FUEL -= 1
-		else:
-			jet_pack_fire.emitting = false
+	else:
+		jet_pack_fire.emitting = false
 	if jump_attempted or input_buffer.time_left > 0:
 		if is_on_wall() and horizontal_input != 0:
 			velocity.y = WALL_JUMP_VELOCITY
